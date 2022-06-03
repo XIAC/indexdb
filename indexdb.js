@@ -27,10 +27,19 @@ dbConnection.onerror = (error) =>{
 // https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/put
 //metodo INSERTAR
 const insertar = (informacion) =>{
+    // recuperando los datos de los inputs
+    var _clave = document.getElementById('clave').value;
+    var _nombre = document.getElementById('nombre').value;
+    console.log(_clave);
+    console.log(_nombre);
+
+    // creando un objeto articulo 
+    var art = {clave: _clave, nombre: _nombre};
     var transaccion = db.transaction("articulo", "readwrite");
     const objeto = transaccion.objectStore('articulo');
     // insertar en el objeto
-    const cargarInfo= objeto.add(informacion);
+    // const cargarInfo= objeto.add(informacion);
+    const cargarInfo= objeto.add(art);
     console.log("cargar informacion",cargarInfo);
 }
 //metodo ELIMINAR
@@ -58,6 +67,9 @@ const actualizar = (informacion) =>{
 }
 //metodo devolver
 const devolver = ()=>{
+    // Lista de boostrapp visualizar
+    var lista = document.getElementById("mostrarLista");
+    console.log(lista);
     db = dbConnection.result;
     // lectura de tablas
     var transaccion = db.transaction("articulo", "readonly");
@@ -68,7 +80,8 @@ const devolver = ()=>{
     cursor.onsuccess = (e) =>{
         const c = e.target.result;
         if (c){
-            console.log(c.value);
+            // insertando en el html de UL, se realizo algunas concatenaciones adicionales
+            lista.innerHTML += "<li class='list-group-item'>"+c.value['clave']+'--'+c.value['nombre']+"</li>"
             c.continue();
         } else {
             console.log("no tiene datos");
